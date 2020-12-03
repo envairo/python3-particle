@@ -1,1 +1,1 @@
-from particle import Particle, TokenException, Local
+from particle.particle import Particle, TokenException, Local

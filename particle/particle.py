@@ -43,7 +43,7 @@ class Particle(object):
         if use_token:
             token_dict = self.get_valid_token()
         else:
-            token_dict = self.get_new_token_only()
+            token_dict = self.standardize_only(self.get_new_token_only())
         self.token = token_dict['token']
         self.expires_at = token_dict['expiry']
         super(Particle, self).__init__()
@@ -125,12 +125,32 @@ class Particle(object):
         })
         return standard_dict
 
+    def standardize_only(self, token_dict):
+        standard_dict = {}
+        try:
+            _token = token_dict['token']
+        except KeyError:
+            _token = token_dict['access_token']
+            _expiry = datetime.datetime.now(pytz.utc) + datetime.timedelta(seconds=token_dict['expires_in'])
+        else:
+            _expiry = dateutil.parser.parse(token_dict['expires_at'])
+
+        standard_dict.update({
+            'token': _token,
+            'expiry': _expiry,
+        })
+        return standard_dict
+
     def get_token_expiry_from_list(self, token_value):
         _expiry = None
         for t in self.token_list:
             if t['token'] == token_value:
                 _expiry = dateutil.parser.parse(t['expires_at'])
                 break
+        return _expiry
+
+    def get_token_expiry_only(self, token_value):
+        _expiry = dateutil.parser.parse(str(token_value['expires_in']))
         return _expiry
 
     def current_token_is_valid(self):

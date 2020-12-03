@@ -37,10 +37,13 @@ class Particle(object):
     username = None
     password = None
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, use_token=False):
         self.username = username
         self.password = password
-        token_dict = self.get_valid_token()
+        if use_token:
+            token_dict = self.get_valid_token()
+        else:
+            token_dict = self.get_new_token()
         self.token = token_dict['token']
         self.expires_at = token_dict['expiry']
         super(Particle, self).__init__()

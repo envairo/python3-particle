@@ -43,7 +43,7 @@ class Particle(object):
         if use_token:
             token_dict = self.get_valid_token()
         else:
-            token_dict = self.get_new_token()
+            token_dict = self.get_new_token_only()
         self.token = token_dict['token']
         self.expires_at = token_dict['expiry']
         super(Particle, self).__init__()
@@ -65,6 +65,18 @@ class Particle(object):
         if token_response.ok:
             data = token_response.json()
             self.token_list = self.get_token_list()
+            return data
+        else:
+            raise TokenException(token_response.reason)
+
+    def get_new_token_only(self):
+        url = self.API_PREFIX + '/oauth/token'
+        payload = {'username': self.username,
+                   'password': self.password,
+                   'grant_type': 'password', }
+        token_response = requests.post(url, auth=('particle', 'particle'), data=payload)
+        if token_response.ok:
+            data = token_response.json()
             return data
         else:
             raise TokenException(token_response.reason)

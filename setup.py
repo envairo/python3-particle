@@ -15,7 +15,7 @@ setup(
     description='A Python wrapper around the Particle (particle.io) Cloud API',
     long_description=README,
     install_requires = [
-        'python-dateutil==2.8.1',
+        'python-dateutil==2.8.2',
         'pytz==2019.3',
         'requests==2.7.0',
 	'pexpect==3.3'
